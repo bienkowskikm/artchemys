@@ -32,34 +32,31 @@
     background: var(--parchment);
     color: var(--ink);
     overflow-x: hidden;
-    line-height: 1.5; /* Poprawa czytelności */
   }
 
   /* ── CURSOR ── */
-  @media (pointer: fine) { /* Kursor tylko dla urządzeń z myszką */
-    body { cursor: none; }
-    .cursor {
-      width: 8px; height: 8px;
-      background: var(--gold);
-      border-radius: 50%;
-      position: fixed;
-      top: 0; left: 0;
-      pointer-events: none;
-      z-index: 9999;
-      transition: transform 0.1s ease-out;
-      mix-blend-mode: multiply;
-    }
-    .cursor-ring {
-      width: 32px; height: 32px;
-      border: 1px solid var(--gold);
-      border-radius: 50%;
-      position: fixed;
-      top: 0; left: 0;
-      pointer-events: none;
-      z-index: 9998;
-      transition: transform 0.2s ease-out, opacity 0.3s;
-      opacity: 0.6;
-    }
+  body { cursor: none; }
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: multiply;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s;
+    opacity: 0.6;
   }
 
   /* ── NAV ── */
@@ -71,28 +68,34 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.4s ease;
+    mix-blend-mode: normal;
   }
-  
+  nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(245,240,232,0.95) 0%, rgba(245,240,232,0) 100%);
+    pointer-events: none;
+  }
   .nav-logo {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
     letter-spacing: 0.08em;
     color: var(--ink);
     text-decoration: none;
-    z-index: 2;
+    position: relative;
   }
   .nav-logo span { color: var(--gold); }
-  
   .nav-links {
     display: flex;
     gap: 40px;
     list-style: none;
+    position: relative;
   }
   .nav-links a {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--stone);
@@ -100,13 +103,30 @@
     transition: color 0.3s;
   }
   .nav-links a:hover { color: var(--gold); }
+  .nav-cta {
+    position: relative;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 10px 24px;
+    border: 1px solid var(--gold);
+    transition: all 0.3s;
+  }
+  .nav-cta:hover {
+    background: var(--gold);
+    color: var(--white);
+  }
 
   /* ── HERO ── */
   .hero {
     min-height: 100vh;
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
+    grid-template-columns: 1fr 1fr;
     position: relative;
+    overflow: hidden;
   }
 
   .hero-left {
@@ -114,77 +134,941 @@
     flex-direction: column;
     justify-content: center;
     padding: 140px 60px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
   }
 
   .hero-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(48px, 8vw, 82px);
+    font-size: clamp(52px, 6vw, 88px);
     font-weight: 300;
-    line-height: 0.95;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: var(--ink);
     margin-bottom: 32px;
     opacity: 0;
-    animation: fadeUp 1s ease forwards 0.4s;
+    animation: fadeUp 0.8s ease 0.4s forwards;
   }
-  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .hero-title .line-break { display: block; }
 
+  .hero-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--stone);
+    max-width: 420px;
+    margin-bottom: 52px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+  .btn-primary {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    padding: 16px 36px;
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    transition: all 0.3s;
+  }
+  .btn-primary:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+  .btn-secondary {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--stone);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s;
+  }
+  .btn-secondary:hover { color: var(--gold); }
+  .btn-secondary svg { transition: transform 0.3s; }
+  .btn-secondary:hover svg { transform: translateX(4px); }
+
+  .hero-badge {
+    margin-top: 60px;
+    display: flex;
+    gap: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards;
+  }
+  .badge-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .badge-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .badge-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .badge-divider {
+    width: 1px;
+    background: var(--stone-light);
+    align-self: stretch;
+  }
+
+  /* ── HERO RIGHT ── */
   .hero-right {
     position: relative;
+    overflow: hidden;
+  }
+  .hero-visual {
+    position: absolute;
+    inset: 0;
     background: var(--ink);
-    min-height: 500px;
+    overflow: hidden;
+  }
+  .hero-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 60% 40%, rgba(184,148,58,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 80% 70%, rgba(45,107,94,0.2) 0%, transparent 50%);
   }
 
-  /* ── MOLECULE ANIMATION ── */
+  /* Greek myth decorative elements */
+  .hero-greek-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 200px;
+    font-weight: 300;
+    color: rgba(184,148,58,0.08);
+    letter-spacing: -0.05em;
+    white-space: nowrap;
+    user-select: none;
+    animation: slowRotate 30s linear infinite;
+  }
+
   .hero-molecule {
     position: absolute;
-    top: 50%; left: 50%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    width: 300px; height: 300px;
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+    animation: fadeIn 1.5s ease 1.2s forwards;
   }
-  
+
   .molecule-circle {
     position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
     border-radius: 50%;
-    border: 1px solid rgba(184,148,58,0.2);
+    border: 1px solid rgba(184,148,58,0.3);
+    animation: pulse 4s ease-in-out infinite;
   }
-  .mc1 { width: 80px; height: 80px; background: rgba(184,148,58,0.1); }
-  .mc2 { width: 160px; height: 160px; }
-  .mc3 { width: 240px; height: 240px; }
+  .mc1 { width: 60px; height: 60px; top: 50%; left: 50%; transform: translate(-50%,-50%); background: rgba(184,148,58,0.3); border: none; animation-delay: 0s; }
+  .mc2 { width: 120px; height: 120px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: 0.5s; }
+  .mc3 { width: 200px; height: 200px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: 1s; }
+  .mc4 { width: 280px; height: 280px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: 1.5s; }
 
-  /* ── SECTIONS ── */
-  section { padding: 120px 60px; }
-  
+  .molecule-dot {
+    position: absolute;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+  }
+
+  /* Lines connecting dots */
+  .molecule-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 1px;
+    background: linear-gradient(to right, rgba(184,148,58,0.6), transparent);
+    transform-origin: left center;
+  }
+
+  .hero-caption {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    right: 40px;
+  }
+  .hero-caption-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: rgba(184,148,58,0.6);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── PARTNERS STRIP ── */
+  .partners {
+    background: var(--ink);
+    padding: 24px 60px;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    overflow: hidden;
+  }
+  .partners-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--stone);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .partners-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+  .partners-logos {
+    display: flex;
+    gap: 48px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .partner-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: rgba(255,255,255,0.4);
+    white-space: nowrap;
+    transition: color 0.3s;
+  }
+  .partner-logo:hover { color: var(--gold-light); }
+  .partner-logo strong { font-weight: 600; }
+
+  /* ── ABOUT ── */
+  .about {
+    padding: 120px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .about-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .about-label::before {
+    content: '';
+    width: 30px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .about-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 28px;
+  }
+  .about-title em { font-style: italic; color: var(--gold); }
+
+  .about-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--stone);
+    margin-bottom: 20px;
+  }
+
+  .about-right {
+    position: relative;
+  }
+
+  .about-card {
+    background: var(--cream);
+    border: 1px solid var(--stone-light);
+    padding: 40px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .about-card:hover {
+    border-color: var(--gold);
+    transform: translateX(4px);
+  }
+  .about-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--gold);
+    transform: scaleY(0);
+    transition: transform 0.3s;
+  }
+  .about-card:hover::before { transform: scaleY(1); }
+
+  .card-icon {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 40px;
+    font-weight: 300;
+    color: var(--gold);
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .card-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--stone);
+  }
+
+  /* ── PRODUCT ── */
+  .product {
+    background: var(--ink);
+    padding: 120px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .product::before {
+    content: 'ΑΛΉΘΕΙΑ';
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 240px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.03);
+    letter-spacing: -0.05em;
+    pointer-events: none;
+  }
+
+  .product-header {
+    text-align: center;
+    margin-bottom: 80px;
+    position: relative;
+    z-index: 1;
+  }
+  .product-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .product-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 5vw, 68px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+  }
+  .product-title em { font-style: italic; color: var(--gold); }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.05);
+    position: relative;
+    z-index: 1;
+  }
+
+  .product-item {
+    background: var(--ink);
+    padding: 48px 40px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .product-item:hover {
+    background: rgba(184,148,58,0.05);
+  }
+  .product-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(184,148,58,0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .product-item:hover::after { opacity: 1; }
+
+  .product-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+  }
+  .product-item-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .product-item-text {
+    font-size: 13px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.4);
+  }
+  .product-tag {
+    display: inline-block;
+    margin-top: 24px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(184,148,58,0.3);
+    padding: 6px 14px;
+  }
+
+  /* ── SCIENCE ── */
+  .science {
+    padding: 120px 60px;
+    background: var(--cream);
+    position: relative;
+  }
+
+  .science-inner {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .science-sticky {
+    position: sticky;
+    top: 120px;
+  }
+
+  .science-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .science-label::before {
+    content: '';
+    width: 30px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .science-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+  .science-title em { font-style: italic; color: var(--gold); }
+
+  .science-text {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--stone);
+    margin-bottom: 32px;
+  }
+
+  .science-publication {
+    border: 1px solid var(--stone-light);
+    padding: 24px;
+    background: var(--white);
+  }
+  .pub-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .pub-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .pub-meta {
+    font-size: 12px;
+    color: var(--stone);
+    letter-spacing: 0.03em;
+  }
+
+  .science-right {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--stone-light);
+    margin-bottom: 1px;
+  }
+  .stat-cell {
+    background: var(--white);
+    padding: 36px 32px;
+    transition: background 0.3s;
+  }
+  .stat-cell:hover { background: var(--gold-pale); }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-num span { color: var(--gold); }
+  .stat-label {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+
+  .formula-box {
+    background: var(--ink);
+    padding: 40px;
+    margin-top: 1px;
+  }
+  .formula-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .formula-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-style: italic;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+  }
+  .formula-text strong {
+    color: var(--gold-light);
+    font-style: normal;
+  }
+
+  /* ── MARKET ── */
+  .market {
+    padding: 120px 60px;
+    background: var(--parchment);
+  }
+  .market-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+  .market-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .market-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .market-title em { font-style: italic; color: var(--gold); }
+
+  .market-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+  .market-card {
+    border: 1px solid var(--stone-light);
+    padding: 32px 24px;
+    background: var(--white);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .market-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: left;
+  }
+  .market-card:hover { border-color: var(--gold); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+  .market-card:hover::before { transform: scaleX(1); }
+
+  .market-flag {
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
+  .market-country {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .market-potential {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .market-desc {
+    font-size: 11px;
+    color: var(--stone);
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+  }
+  .market-badge {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+  }
+  .badge-free { background: #EAF3DE; color: #27500A; }
+  .badge-priority { background: var(--gold-pale); color: var(--gold); }
+
+  /* ── CONTACT ── */
+  .contact {
+    background: var(--ink);
+    padding: 120px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse 50% 60% at 20% 50%, rgba(184,148,58,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 80% 50%, rgba(45,107,94,0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .contact-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .contact-label::before {
+    content: '';
+    width: 30px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .contact-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+  .contact-title em { font-style: italic; color: var(--gold); }
+
+  .contact-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 40px;
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    transition: color 0.3s;
+    text-decoration: none;
+  }
+  .contact-item:hover { color: var(--gold); }
+  .contact-item-icon {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.3s;
+  }
+  .contact-item:hover .contact-item-icon { border-color: var(--gold); }
+
+  .contact-form-side {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 48px;
+  }
+  .form-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    color: var(--white);
+    margin-bottom: 32px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--stone);
+    margin-bottom: 8px;
+  }
+  .form-input {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 14px 16px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    color: var(--white);
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .form-input:focus { border-color: var(--gold); }
+  .form-input::placeholder { color: rgba(255,255,255,0.2); }
+  select.form-input option { background: var(--ink); }
+  .form-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--gold);
+    border: none;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    cursor: none;
+    transition: background 0.3s;
+    margin-top: 8px;
+  }
+  .form-submit:hover { background: var(--gold-light); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #080807;
+    padding: 40px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.4);
+  }
+  .footer-logo span { color: var(--gold); }
+  .footer-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: rgba(255,255,255,0.2);
+  }
+  .footer-greek {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    color: rgba(184,148,58,0.3);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slowRotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: translate(-50%,-50%) scale(1); }
+    50% { opacity: 0.6; transform: translate(-50%,-50%) scale(1.05); }
+  }
+  @keyframes orbit {
+    from { transform: rotate(0deg) translateX(80px) rotate(0deg); }
+    to { transform: rotate(360deg) translateX(80px) rotate(-360deg); }
+  }
+  @keyframes orbit2 {
+    from { transform: rotate(120deg) translateX(110px) rotate(-120deg); }
+    to { transform: rotate(480deg) translateX(110px) rotate(-480deg); }
+  }
+  @keyframes orbit3 {
+    from { transform: rotate(240deg) translateX(90px) rotate(-240deg); }
+    to { transform: rotate(600deg) translateX(90px) rotate(-600deg); }
+  }
+
+  .orbit-dot {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 6px; height: 6px;
+    background: var(--gold-light);
+    border-radius: 50%;
+    margin: -3px;
+  }
+  .od1 { animation: orbit 8s linear infinite; }
+  .od2 { animation: orbit2 12s linear infinite; background: var(--verdigris-light); }
+  .od3 { animation: orbit3 10s linear infinite; background: rgba(255,255,255,0.5); }
+
+  /* ── SCROLL REVEAL ── */
   .reveal {
     opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+    transform: translateY(32px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
   }
   .reveal.visible {
     opacity: 1;
     transform: translateY(0);
   }
-
-  /* ── MARKET GRID ── */
-  .market-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
-  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 1024px) {
     nav { padding: 20px 30px; }
-    .nav-links { display: none; } /* Uproszczenie na mobile */
-    .hero { grid-template-columns: 1fr; }
-    section { padding: 80px 30px; }
-    .hero-left { padding: 140px 30px 60px; }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 120px 30px 60px; }
+    .hero-right { height: 400px; }
+    .about { grid-template-columns: 1fr; padding: 80px 30px; }
+    .product { padding: 80px 30px; }
+    .product-grid { grid-template-columns: 1fr; }
+    .science { padding: 80px 30px; }
+    .science-inner { grid-template-columns: 1fr; }
+    .science-sticky { position: static; }
+    .market { padding: 80px 30px; }
+    .market-grid { grid-template-columns: 1fr 1fr; }
+    .contact { padding: 80px 30px; }
+    .contact-inner { grid-template-columns: 1fr; }
+    .partners { padding: 20px 30px; flex-wrap: wrap; gap: 20px; }
+    footer { padding: 30px; flex-direction: column; gap: 16px; text-align: center; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+    .nav-links { display: none; }
   }
-
-  /* Animacje */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+  @media (max-width: 640px) {
+    .market-grid { grid-template-columns: 1fr; }
+    .stat-row { grid-template-columns: 1fr; }
+    .hero-badge { flex-wrap: wrap; }
   }
 </style>
 </head>
@@ -193,7 +1077,8 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<nav id="mainNav">
+<!-- NAV -->
+<nav>
   <a href="#" class="nav-logo">Art<span>chemys</span></a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
@@ -204,88 +1089,369 @@
   <a href="#contact" class="nav-cta">Contact Us</a>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
   <div class="hero-left">
-    <div class="hero-eyebrow" style="opacity:0; animation: fadeUp 1s ease forwards 0.2s;">Chemistry That Reveals Truth</div>
+    <div class="hero-eyebrow">Chemistry That Reveals Truth</div>
     <h1 class="hero-title">
-      Art meets<br>
-      <em>Chemistry.</em><br>
-      Future begins.
+      <span class="line-break">Art meets</span>
+      <span class="line-break"><em>Chemistry.</em></span>
+      <span class="line-break">Future begins.</span>
     </h1>
-    <p class="hero-subtitle" style="opacity:0; animation: fadeUp 1s ease forwards 0.6s;">
-      Artchemys develops innovative chemical solutions for art conservation and beyond. 
-      Spin-off of the University of Warsaw and National Museum in Warsaw.
+    <p class="hero-subtitle">
+      Artchemys develops innovative chemical solutions for art conservation and beyond. Spin-off of the University of Warsaw and National Museum in Warsaw.
     </p>
+    <div class="hero-actions">
+      <a href="#product" class="btn-primary">Our Technology</a>
+      <a href="#contact" class="btn-secondary">
+        Get in touch
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+    <div class="hero-badge">
+      <div class="badge-item">
+        <div class="badge-num">EP</div>
+        <div class="badge-label">European Patent</div>
+      </div>
+      <div class="badge-divider"></div>
+      <div class="badge-item">
+        <div class="badge-num">9×</div>
+        <div class="badge-label">Reusable Product</div>
+      </div>
+      <div class="badge-divider"></div>
+      <div class="badge-item">
+        <div class="badge-num">0</div>
+        <div class="badge-label">Carcinogens</div>
+      </div>
+    </div>
   </div>
+
   <div class="hero-right">
-    <div class="hero-molecule">
-      <div class="molecule-circle mc1"></div>
-      <div class="molecule-circle mc2"></div>
-      <div class="molecule-circle mc3"></div>
+    <div class="hero-visual">
+      <div class="hero-greek-text">Α</div>
+      <div class="hero-molecule">
+        <div class="molecule-circle mc1"></div>
+        <div class="molecule-circle mc2"></div>
+        <div class="molecule-circle mc3"></div>
+        <div class="molecule-circle mc4"></div>
+        <div class="molecule-dot" style="top:50%;left:50%"></div>
+        <div class="orbit-dot od1"></div>
+        <div class="orbit-dot od2"></div>
+        <div class="orbit-dot od3"></div>
+      </div>
+      <div class="hero-caption">
+        <div class="hero-caption-text">ἀλήθεια — the unconcealedness of truth</div>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- PARTNERS -->
+<div class="partners">
+  <div class="partners-label">Research Partners</div>
+  <div class="partners-divider"></div>
+  <div class="partners-logos">
+    <div class="partner-logo"><strong>University</strong> of Warsaw</div>
+    <div class="partner-logo"><strong>National Museum</strong> in Warsaw</div>
+    <div class="partner-logo">ACS Applied Materials<strong> & Interfaces</strong></div>
+    <div class="partner-logo">Patent <strong>EP 4 164 895 B1</strong></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-left reveal">
+    <div class="about-label">Who We Are</div>
+    <h2 class="about-title">Where ancient <em>myth</em> meets modern chemistry</h2>
+    <p class="about-text">
+      Artchemys was born from a conviction that science should serve culture. We are a chemistry company building a portfolio of innovative materials — starting with the conservation of art, growing into the future of sustainable chemistry.
+    </p>
+    <p class="about-text">
+      Our name carries the hidden spirit of Artemis — Greek goddess of precision and protection — and the aletheia: the uncovering of what is concealed. Like our organogel that reveals the true colors of paintings hidden beneath layers of wax.
+    </p>
+  </div>
+  <div class="about-right reveal reveal-delay-2">
+    <div class="about-card">
+      <div class="card-icon">Α</div>
+      <div class="card-title">Aletheia — Truth in Materials</div>
+      <div class="card-text">Our technology reveals what has been hidden. We uncover the original brilliance of artworks, restoring what time and chemistry have concealed.</div>
+    </div>
+    <div class="about-card">
+      <div class="card-icon">Χ</div>
+      <div class="card-title">Chemistry Without Compromise</div>
+      <div class="card-text">No carcinogens. No special infrastructure. No compromise between efficacy and safety. Our organogel replaces TCE — a known carcinogen — with a safe, reusable alternative.</div>
+    </div>
+    <div class="about-card">
+      <div class="card-icon">Μ</div>
+      <div class="card-title">Mythology of Innovation</div>
+      <div class="card-text">Like Prometheus who brought fire to humanity, we bring scientific knowledge from the laboratory to the hands of conservators, restorers, and collectors worldwide.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT -->
+<section class="product" id="product">
+  <div class="product-header reveal">
+    <div class="product-label">Our Technology</div>
+    <h2 class="product-title">eLoZelo<em>™</em> Organogel</h2>
+  </div>
+  <div class="product-grid">
+    <div class="product-item reveal">
+      <div class="product-num">01</div>
+      <div class="product-item-title">pNIPA-LAP Nanocomposite Organogel</div>
+      <div class="product-item-text">Poly(N-isopropylacrylamide) crosslinked with Laponite XLS nanoclay, saturated with our proprietary POA solvent mixture. The world's first safe, effective alternative to TCE for wax-resin lining removal.</div>
+      <div class="product-tag">Patent Protected</div>
+    </div>
+    <div class="product-item reveal reveal-delay-1">
+      <div class="product-num">02</div>
+      <div class="product-item-title">Reusable — Minimum 9× Applications</div>
+      <div class="product-item-text">Unlike single-use chemical treatments, eLoZelo can be regenerated and reused at least 9 times without loss of efficacy. Simply immerse in fresh POA solvent — the gel recovers its full cleaning power.</div>
+      <div class="product-tag">Sustainable</div>
+    </div>
+    <div class="product-item reveal reveal-delay-2">
+      <div class="product-num">03</div>
+      <div class="product-item-title">Safe for Canvas, Paint & Conservators</div>
+      <div class="product-item-text">Confirmed by FTIR and GC-MS analysis — eLoZelo does not damage linen canvas or polymerized oil paint layers. No special ventilation required. No carcinogenic substances. No hazardous waste disposal.</div>
+      <div class="product-tag">Laboratory Verified</div>
+    </div>
+  </div>
+</section>
+
+<!-- SCIENCE -->
+<section class="science" id="science">
+  <div class="science-inner">
+    <div class="science-sticky reveal">
+      <div class="science-label">Scientific Foundation</div>
+      <h2 class="science-title">Peer-reviewed <em>science</em></h2>
+      <p class="science-text">
+        Our technology is based on rigorous academic research published in one of the world's leading materials science journals. Every claim is backed by data.
+      </p>
+      <div class="science-publication">
+        <div class="pub-label">Publication</div>
+        <div class="pub-title">"Nanocomposite Organogel for Art Conservation — A Novel Wax-Resin Removal System"</div>
+        <div class="pub-meta">Kaniewska, Pilecka-Pietrusińska, Karbarz<br>ACS Applied Materials & Interfaces, 2023<br>DOI: 10.1021/acsami.3c00321</div>
+      </div>
+    </div>
+    <div class="science-right reveal reveal-delay-1">
+      <div class="stat-row">
+        <div class="stat-cell">
+          <div class="stat-num">9<span>×</span></div>
+          <div class="stat-label">Verified reuse cycles</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num">87<span>%</span></div>
+          <div class="stat-label">Solvent content</div>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-cell">
+          <div class="stat-num">0</div>
+          <div class="stat-label">Carcinogens — vs TCE (cat. 1B)</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num">20<span>+</span></div>
+          <div class="stat-label">Paintings treated per 100g</div>
+        </div>
+      </div>
+      <div class="formula-box">
+        <div class="formula-label">Active Composition — POA Solvent System</div>
+        <div class="formula-text">
+          <strong>IPA 35%</strong> (isopropanol) +
+          <strong>ISO 45%</strong> (isooctane) +
+          <strong>ACE 20%</strong> (acetone)<br><br>
+          Teas parameters matched to TCE — without the toxicity.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKET -->
+<section class="market" id="market">
+  <div class="market-header reveal">
+    <div class="market-label">Global Market</div>
+    <h2 class="market-title">Where <em>Artchemys</em> operates</h2>
+  </div>
+  <div class="market-grid">
+    <div class="market-card reveal">
+      <div class="market-flag">🇺🇸</div>
+      <div class="market-country">United States</div>
+      <div class="market-potential">15–25M EUR</div>
+      <div class="market-desc">20–25% of museum collections contain wax-resin lined paintings. MoMA, Met, Smithsonian.</div>
+      <div class="market-badge badge-free">No Patent</div>
+    </div>
+    <div class="market-card reveal reveal-delay-1">
+      <div class="market-flag">🇯🇵</div>
+      <div class="market-country">Japan</div>
+      <div class="market-potential">8–15M EUR</div>
+      <div class="market-desc">Dutch method introduced via KIK-IRPA. National Museum of Modern Art Tokyo.</div>
+      <div class="market-badge badge-free">No Patent</div>
+    </div>
+    <div class="market-card reveal reveal-delay-2">
+      <div class="market-flag">🇩🇪</div>
+      <div class="market-country">Germany</div>
+      <div class="market-potential">4–8M EUR</div>
+      <div class="market-desc">700+ museums with painting collections. TCE being phased out under SVHC regulations.</div>
+      <div class="market-badge badge-priority">Active Patent</div>
+    </div>
+    <div class="market-card reveal reveal-delay-3">
+      <div class="market-flag">🇳🇱</div>
+      <div class="market-country">Netherlands</div>
+      <div class="market-potential">3–6M EUR</div>
+      <div class="market-desc">Origin of the Dutch method. 95% of 17th-century paintings affected. Amsterdam Wax-Resin Project.</div>
+      <div class="market-badge badge-priority">Active Patent</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div class="contact-left reveal">
+      <div class="contact-label">Get In Touch</div>
+      <h2 class="contact-title">Let us reveal the <em>truth</em> together</h2>
+      <p class="contact-text">
+        Whether you are a conservator, auction house, museum, or research institution — we want to hear from you. We offer samples, consultations, and partnerships.
+      </p>
+      <div class="contact-info">
+        <a href="mailto:contact@artchemys.eu" class="contact-item">
+          <div class="contact-item-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 4l6 5 6-5M2 4h12v8H2V4z" stroke="var(--gold)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          contact@artchemys.eu
+        </a>
+        <a href="https://artchemys.eu" class="contact-item">
+          <div class="contact-item-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="6" stroke="var(--gold)" stroke-width="1.2"/>
+              <path d="M8 2c-2 2-3 4-3 6s1 4 3 6M8 2c2 2 3 4 3 6s-1 4-3 6M2 8h12" stroke="var(--gold)" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          artchemys.eu
+        </a>
+        <div class="contact-item">
+          <div class="contact-item-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 1C5.24 1 3 3.24 3 6c0 4 5 9 5 9s5-5 5-9c0-2.76-2.24-5-5-5zm0 7a2 2 0 110-4 2 2 0 010 4z" stroke="var(--gold)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          Warsaw, Poland
+        </div>
+      </div>
+    </div>
+    <div class="contact-form-side reveal reveal-delay-1">
+      <div class="form-title">Send us a message</div>
+      <form onsubmit="handleSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input type="text" class="form-input" placeholder="Dr. Anna Kowalska">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="anna@museum.pl">
+        </div>
+        <div class="form-group">
+          <label class="form-label">I am a...</label>
+          <select class="form-input">
+            <option value="">Select your role</option>
+            <option>Art Conservator</option>
+            <option>Auction House</option>
+            <option>Museum</option>
+            <option>Private Collector</option>
+            <option>Research Institution</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-input" rows="4" placeholder="I would like to learn more about eLoZelo and request a sample..." style="resize:vertical"></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send Message →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Art<span>chemys</span></div>
+  <div class="footer-tagline">Chemistry That Protects Art</div>
+  <div class="footer-greek">ἀλήθεια</div>
+</footer>
+
 <script>
-  // 1. Poprawiony kursor (płynność i obsługa dotyku)
+  // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
 
-  if (window.matchMedia("(pointer: fine)").matches) {
-    document.addEventListener('mousemove', (e) => {
-      // Używamy requestAnimationFrame dla lepszej wydajności
-      window.requestAnimationFrame(() => {
-        cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-        ring.style.transform = `translate3d(${e.clientX - 12}px, ${e.clientY - 12}px, 0)`;
-      });
-    });
-  }
-
-  // 2. Obsługa nawigacji przy skrolowaniu
-  const nav = document.getElementById('mainNav');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      nav.style.background = 'rgba(245,240,232,0.95)';
-      nav.style.padding = '15px 60px';
-      nav.style.backdropFilter = 'blur(10px)';
-    } else {
-      nav.style.background = 'transparent';
-      nav.style.padding = '24px 60px';
-      nav.style.backdropFilter = 'none';
-    }
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 4}px, ${my - 4}px)`;
   });
 
-  // 3. Obsługa Reveal (Intersection Observer)
-  const observerOptions = {
-    threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px'
-  };
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx - 16}px, ${ry - 16}px)`;
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
 
-  const observer = new IntersectionObserver((entries) => {
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform += ' scale(2)';
+      ring.style.opacity = '0';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.opacity = '0.6';
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
       }
     });
-  }, observerOptions);
+  }, { threshold: 0.15 });
 
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  reveals.forEach(el => observer.observe(el));
 
-  // 4. Obsługa formularza
+  // Nav scroll effect
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      nav.style.background = 'rgba(245,240,232,0.95)';
+      nav.style.backdropFilter = 'blur(12px)';
+      nav.style.boxShadow = '0 1px 0 rgba(0,0,0,0.06)';
+    } else {
+      nav.style.background = 'transparent';
+      nav.style.backdropFilter = 'none';
+      nav.style.boxShadow = 'none';
+    }
+  });
+
+  // Form
   function handleSubmit(e) {
     e.preventDefault();
-    const btn = e.target.querySelector('button');
-    const originalText = btn.textContent;
-    btn.textContent = 'Sending...';
-    
-    // Symulacja wysyłki
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = 'Message Sent ✓';
+    btn.style.background = '#2D6B5E';
+    btn.style.color = '#fff';
     setTimeout(() => {
-      alert('Thank you, Krzysiek! Your message has been sent.');
-      btn.textContent = originalText;
+      btn.textContent = 'Send Message →';
+      btn.style.background = '';
+      btn.style.color = '';
       e.target.reset();
-    }, 1500);
+    }, 3000);
   }
 </script>
-
 </body>
 </html>
